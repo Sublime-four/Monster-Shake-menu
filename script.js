@@ -57,7 +57,8 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             cart.forEach((item, index) => {
                 const listItem = document.createElement("li");
-                listItem.textContent = `${item.name} - $${item.price} `;
+                listItem.textContent = `${item.name} (${item.size}, ${item.sabor}) - $${item.price} `;
+
     
                 const quantityContainer = document.createElement("span");
                 quantityContainer.style.display = "flex";
@@ -120,29 +121,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log("Selected Size Button:", selectedSizeButton); // Verifica si está obteniendo el botón correcto
 
-// Si no hay tamaño seleccionado, muestra una alerta y detiene la ejecución
-         if (!selectedSizeButton) {
-         alert("Por favor selecciona un tamaño antes de ordenar.");
-         return;
-}
+        if (!selectedSizeButton) {
+            alert("Por favor selecciona un tamaño antes de ordenar.");
+            return;
+        }
 
-         const selectedSize = selectedSizeButton.textContent;
-         const price = parseFloat(selectedSizeButton.getAttribute("data-price")); // 🔥 Ya no tiene valor por defecto
+        const selectedSize = selectedSizeButton.textContent;
+        const price = parseFloat(selectedSizeButton.getAttribute("data-price"));
 
-            // Crear clave única para diferenciar por tamaño
-            const uniqueKey = `${shakeName} - ${selectedSize}`;
-    
-            // Agregar o actualizar el carrito
-            const existingItem = cart.find(item => item.key === uniqueKey);
-            if (existingItem) {
-                existingItem.quantity++;
-            } else {
-                cart.push({ key: uniqueKey, name: shakeName, size: selectedSize, price, quantity: 1 });
-            }
-    
-            updateCart();
-        });
+        // Determinar si el combo tiene granizado o malteada
+        let sabor = "N/A";
+        const selectGranizado = shakeContainer.querySelector("select[id^='sabor-granizado']");
+        const selectMalteada = shakeContainer.querySelector("select[id^='sabor-malteada']");
+
+        if (selectGranizado) {
+            sabor = selectGranizado.value;
+        } else if (selectMalteada) {
+            sabor = selectMalteada.value;
+        }
+
+        const uniqueKey = `${shakeName} - ${selectedSize} - ${sabor}`;
+
+        const existingItem = cart.find(item => item.key === uniqueKey);
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            cart.push({ key: uniqueKey, name: shakeName, size: selectedSize, sabor, price, quantity: 1 });
+        }
+
+        updateCart();
     });
+});
         
     
     cartIcon.addEventListener("click", () => {
@@ -166,8 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let message = "Hola, quiero hacer un pedido:\n";
         let total = 0;
         cart.forEach(item => {
-            message += `- ${item.name} (${item.size}) x${item.quantity} - $${item.price * item.quantity}\n`;
-
+            message += `- ${item.name} (${item.size}, ${item.sabor}) x${item.quantity} - $${item.price * item.quantity}\n`;
             total += item.price * item.quantity;
         });
         message += `Total: $${total.toLocaleString()}`;
@@ -190,4 +198,5 @@ document.addEventListener("DOMContentLoaded", () => {
         menu.scrollBy({ left: -300, behavior: "smooth" });
     });
 });
+
 
