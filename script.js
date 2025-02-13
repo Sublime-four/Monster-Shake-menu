@@ -111,48 +111,53 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
     
-        orderButtons.forEach(button => {
+    orderButtons.forEach(button => {
         button.addEventListener("click", (event) => {
             const shakeContainer = event.target.closest(".shake");
             const shakeName = shakeContainer.querySelector("h2").textContent;
-            
-        // Tomar el botón seleccionado
-        const selectedSizeButton = shakeContainer.querySelector(".size-btn.selected");
-
-        console.log("Selected Size Button:", selectedSizeButton); // Verifica si está obteniendo el botón correcto
-
-        if (!selectedSizeButton) {
-            alert("Por favor selecciona un tamaño antes de ordenar.");
-            return;
-        }
-
-        const selectedSize = selectedSizeButton.textContent;
-        const price = parseFloat(selectedSizeButton.getAttribute("data-price"));
-
-        // Determinar si el combo tiene granizado o malteada
-        let sabor = "N/A";
-        const selectGranizado = shakeContainer.querySelector("select[id^='sabor-granizado']");
-        const selectMalteada = shakeContainer.querySelector("select[id^='sabor-malteada']");
-
-        if (selectGranizado) {
-            sabor = selectGranizado.value;
-        } else if (selectMalteada) {
-            sabor = selectMalteada.value;
-        }
-
-        const uniqueKey = `${shakeName} - ${selectedSize} - ${sabor}`;
-
-        const existingItem = cart.find(item => item.key === uniqueKey);
-        if (existingItem) {
-            existingItem.quantity++;
-        } else {
-            cart.push({ key: uniqueKey, name: shakeName, size: selectedSize, sabor, price, quantity: 1 });
-        }
-
-        updateCart();
+    
+            // Obtener los botones de tamaño disponibles
+            const sizeButtons = shakeContainer.querySelectorAll(".size-btn");
+    
+            let selectedSizeButton = shakeContainer.querySelector(".size-btn.selected");
+    
+            // Si solo hay una opción de tamaño, seleccionarla automáticamente
+            if (sizeButtons.length === 1) {
+                selectedSizeButton = sizeButtons[0];
+            }
+    
+            if (!selectedSizeButton) {
+                alert("Por favor selecciona un tamaño antes de ordenar.");
+                return;
+            }
+    
+            const selectedSize = selectedSizeButton.textContent;
+            const price = parseFloat(selectedSizeButton.getAttribute("data-price"));
+    
+            // Determinar si el combo tiene granizado o malteada
+            let sabor = "N/A";
+            const selectGranizado = shakeContainer.querySelector("select[id^='sabor-granizado']");
+            const selectMalteada = shakeContainer.querySelector("select[id^='sabor-malteada']");
+    
+            if (selectGranizado) {
+                sabor = selectGranizado.value;
+            } else if (selectMalteada) {
+                sabor = selectMalteada.value;
+            }
+    
+            const uniqueKey = `${shakeName} - ${selectedSize} - ${sabor}`;
+    
+            const existingItem = cart.find(item => item.key === uniqueKey);
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ key: uniqueKey, name: shakeName, size: selectedSize, sabor, price, quantity: 1 });
+            }
+    
+            updateCart();
+        });
     });
-});
-        
+    
     
     cartIcon.addEventListener("click", () => {
         cartContainer.style.bottom = cartContainer.style.bottom === "0px" ? "-100%" : "0px";
@@ -200,3 +205,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+document.querySelectorAll(".order-btn").forEach(button => {
+    button.addEventListener("click", function() {
+        let combo = this.dataset.combo;
+
+        // Verifica si el combo tiene granizado y captura el sabor
+        let selectGranizado = document.getElementById("sabor-granizado-" + combo);
+        let saborGranizado = selectGranizado ? selectGranizado.value : null;
+
+        // Verifica si el combo tiene malteada y captura el sabor
+        let selectMalteada = document.getElementById("sabor-malteada-" + combo);
+        let saborMalteada = selectMalteada ? selectMalteada.value : null;
+
+        // Aquí podrías hacer algo con las variables 'saborGranizado' y 'saborMalteada' si es necesario
+    });
+});
