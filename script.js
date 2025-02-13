@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
     cartContainer.style.overflowY = "auto";
     cartContainer.style.fontSize = "20px";
     
+    
     function updateCart() {
         cartList.innerHTML = "";
         let total = 0;
