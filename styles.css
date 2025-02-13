@@ -167,3 +167,10 @@ span {
     border-radius: 10px;
 }
 
+@media (max-width: 768px) {
+    .logo {
+        max-width: 120px; /* Reduce el tamaño */
+        top: 100px; /* Ajusta la posición */
+        left: 0; /* Elimina el desplazamiento lateral */
+    }
+}
